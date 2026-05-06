@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Académico — IAIYRV</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --surface2: #1a1a1a;
+    --border: #222;
+    --red: #e5001a;
+    --red-dim: #7a000e;
+    --white: #f0f0f0;
+    --gray: #555;
+    --gray2: #888;
+    --mono: 'Space Mono', monospace;
+    --display: 'Bebas Neue', cursive;
+    --body: 'Inter', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-family: var(--display);
+    font-size: 1.4rem;
+    letter-spacing: 3px;
+    color: var(--white);
+  }
+  .nav-logo span { color: var(--red); }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--gray2);
+    text-decoration: none;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--red); }
+
+  /* HERO */
+  .hero {
+    margin-top: 56px;
+    padding: 5rem 2rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: 'IAIYRV';
+    font-family: var(--display);
+    font-size: 22vw;
+    color: rgba(229,0,26,0.04);
+    position: absolute;
+    right: -2vw;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--red);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--red);
+  }
+
+  .hero h1 {
+    font-family: var(--display);
+    font-size: clamp(3rem, 8vw, 7rem);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 em { color: var(--red); font-style: normal; }
+
+  .hero-meta {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--gray2);
+    letter-spacing: 2px;
+    display: flex;
+    gap: 2rem;
+  }
+
+  /* SECTION */
+  section {
+    padding: 5rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    font-family: var(--display);
+    font-size: 4rem;
+    color: var(--red);
+    line-height: 1;
+    opacity: 0.6;
+  }
+
+  .section-title {
+    font-family: var(--display);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    letter-spacing: 3px;
+    line-height: 1;
+  }
+
+  /* SCHEDULE */
+  .schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5px;
+    background: var(--border);
+  }
+
+  .day-col {
+    background: var(--bg);
+  }
+
+  .day-header {
+    background: var(--surface2);
+    padding: 1rem 1.5rem;
+    border-bottom: 2px solid var(--red);
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+
+  .day-name {
+    font-family: var(--display);
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    color: var(--white);
+  }
+
+  .day-abbr {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--red);
+    letter-spacing: 3px;
+  }
+
+  .class-item {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    transition: background 0.2s;
+  }
+  .class-item:hover { background: var(--surface2); }
+
+  .class-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: transparent;
+    transition: background 0.2s;
+  }
+  .class-item:hover::before { background: var(--red); }
+
+  .class-time {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--red);
+    letter-spacing: 2px;
+    margin-bottom: 0.4rem;
+  }
+
+  .class-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+  }
+
+  .class-meta {
+    font-size: 0.72rem;
+    color: var(--gray2);
+    line-height: 1.4;
+  }
+
+  .class-nrc {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--red-dim);
+    border: 1px solid var(--red-dim);
+    padding: 1px 6px;
+    margin-top: 0.4rem;
+    letter-spacing: 1px;
+  }
+
+  .class-sala {
+    font-size: 0.68rem;
+    color: var(--gray);
+    margin-top: 0.2rem;
+  }
+
+  /* BADGE for ramos especiales */
+  .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    margin-left: 6px;
+    vertical-align: middle;
+    text-transform: uppercase;
+    border-radius: 2px;
+  }
+  .badge-r { background: rgba(229,0,26,0.15); color: var(--red); border: 1px solid var(--red-dim); }
+  .badge-ft { background: rgba(255,255,255,0.05); color: var(--gray2); border: 1px solid var(--border); }
+
+  /* CURRICULUM */
+  .malla-wrapper {
+    overflow-x: auto;
+    padding-bottom: 1rem;
+  }
+
+  .malla-grid {
+    display: grid;
+    grid-template-columns: 180px repeat(10, minmax(130px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    min-width: 1400px;
+  }
+
+  .malla-header-cell {
+    background: var(--surface2);
+    padding: 0.75rem 0.5rem;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    color: var(--gray2);
+    text-transform: uppercase;
+  }
+  .malla-header-cell.semester-header {
+    border-bottom: 2px solid var(--red);
+    color: var(--white);
+  }
+
+  .malla-row-label {
+    background: var(--surface);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    border-right: 2px solid var(--red);
+  }
+
+  .row-label-text {
+    font-family: var(--display);
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: var(--red);
+    text-transform: uppercase;
+    writing-mode: horizontal-tb;
+    line-height: 1.4;
+  }
+
+  .malla-cell {
+    background: var(--bg);
+    padding: 0.5rem;
+    min-height: 70px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .subject-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0.5rem 0.6rem;
+    font-size: 0.65rem;
+    line-height: 1.3;
+    color: #ccc;
+    transition: all 0.2s;
+    cursor: default;
+    position: relative;
+    flex: 1;
+  }
+  .subject-card:hover {
+    background: var(--surface2);
+    border-color: var(--red);
+    color: var(--white);
+  }
+  .subject-card:hover::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--red);
+    border-radius: 3px 0 0 3px;
+  }
+
+  .subject-card.current {
+    border-color: var(--red-dim);
+    background: rgba(229,0,26,0.06);
+    color: var(--white);
+  }
+  .subject-card.current::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--red);
+    border-radius: 3px 0 0 3px;
+  }
+
+  /* LINEAS */
+  .linea-tag {
+    font-family: var(--mono);
+    font-size: 0.5rem;
+    color: var(--red-dim);
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .footer-logo {
+    font-family: var(--display);
+    font-size: 1.2rem;
+    letter-spacing: 4px;
+    color: var(--gray);
+  }
+  .footer-logo span { color: var(--red); }
+
+  .footer-meta {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--gray);
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  /* SEPARATOR LINE */
+  .red-line {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--red), transparent);
+    margin: 0 auto;
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--gray2);
+    letter-spacing: 1px;
+  }
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+  .legend-dot.current { background: var(--red); }
+  .legend-dot.future { background: var(--gray); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate { animation: fadeUp 0.6s ease forwards; }
+  .animate-delay-1 { animation-delay: 0.1s; opacity: 0; }
+  .animate-delay-2 { animation-delay: 0.2s; opacity: 0; }
+  .animate-delay-3 { animation-delay: 0.3s; opacity: 0; }
+
+  @media (max-width: 768px) {
+    .schedule-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .hero h1 { font-size: 3rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">IA<span>&</span>RV</div>
+  <ul class="nav-links">
+    <li><a href="#horario">Horario</a></li>
+    <li><a href="#malla">Malla Curricular</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero animate animate-delay-1">
+  <p class="hero-tag">Universidad Finis Terrae</p>
+  <h1>Portal<br><em>Académico</em></h1>
+  <div class="hero-meta">
+    <span>PRIMER SEMESTRE 2025</span>
+    <span>ING. CIVIL EN IA Y RV</span>
+  </div>
+</div>
+
+<div class="red-line"></div>
+
+<!-- HORARIO -->
+<section id="horario">
+  <div class="section-header animate animate-delay-2">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Horario<br>Semanal</h2>
+  </div>
+
+  <div class="schedule-grid animate animate-delay-3">
+
+    <!-- LUNES -->
+    <div class="day-col">
+      <div class="day-header">
+        <span class="day-name">Lunes</span>
+        <span class="day-abbr">LU</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">08:30 → 09:45</div>
+        <div class="class-name">Taller I: Arte y Estética</div>
+        <div class="class-meta">Carla Almendra Diaz Santos</div>
+        <div class="class-sala">Sala por confirmar</div>
+        <span class="class-nrc">NRC 23805</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">09:50 → 11:05</div>
+        <div class="class-name">Taller I: Arte y Estética</div>
+        <div class="class-meta">Carla Almendra Diaz Santos</div>
+        <div class="class-sala">Sala por confirmar</div>
+        <span class="class-nrc">NRC 23805</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">12:30 → 13:45</div>
+        <div class="class-name">Interacción Hum-Maq I</div>
+        <div class="class-meta">Isidora Josefina Pesce Rossat</div>
+        <div class="class-sala">Sala B403, Piso 4, Amberes Sur</div>
+        <span class="class-nrc">NRC 23800</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">13:50 → 15:05</div>
+        <div class="class-name">Interacción Hum-Maq I</div>
+        <div class="class-meta">Isidora Josefina Pesce Rossat</div>
+        <div class="class-sala">Sala B403, Piso 4, Amberes Sur</div>
+        <span class="class-nrc">NRC 23800</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">16:30 → 17:45</div>
+        <div class="class-name">Antropología <span class="badge badge-ft">FT</span></div>
+        <div class="class-meta">Alejandro Jose Cifuentes Morales</div>
+        <div class="class-sala">Sala A706, Piso 7, Amberes Norte</div>
+        <span class="class-nrc">NRC 23942</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">17:50 → 19:05</div>
+        <div class="class-name">Antropología <span class="badge badge-ft">FT</span></div>
+        <div class="class-meta">Alejandro Jose Cifuentes Morales</div>
+        <div class="class-sala">Sala A706, Piso 7, Amberes Norte</div>
+        <span class="class-nrc">NRC 23942</span>
+      </div>
+    </div>
+
+    <!-- MARTES -->
+    <div class="day-col">
+      <div class="day-header">
+        <span class="day-name">Martes</span>
+        <span class="day-abbr">MA</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">11:10 → 12:25</div>
+        <div class="class-name">Introducción a la Programación</div>
+        <div class="class-meta">Maria Jesus Bopp Ibar</div>
+        <div class="class-sala">Sala AS106, Piso -1, Amberes Norte</div>
+        <span class="class-nrc">NRC 23802</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">12:30 → 13:45</div>
+        <div class="class-name">Introducción a la Programación</div>
+        <div class="class-meta">Maria Jesus Bopp Ibar</div>
+        <div class="class-sala">Sala AS106, Piso -1, Amberes Norte</div>
+        <span class="class-nrc">NRC 23802</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">13:50 → 15:05</div>
+        <div class="class-name">Taller Pensam Comuni Arte <span class="badge badge-ft">FT</span></div>
+        <div class="class-meta">Antonia Belen Del Rosario Castro Pinto</div>
+        <div class="class-sala">Sala P101, Piso 1, Post Grado</div>
+        <span class="class-nrc">NRC 11130</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">15:10 → 16:25</div>
+        <div class="class-name">Taller Pensam Comuni Arte <span class="badge badge-ft">FT</span></div>
+        <div class="class-meta">Antonia Belen Del Rosario Castro Pinto</div>
+        <div class="class-sala">Sala P101, Piso 1, Post Grado</div>
+        <span class="class-nrc">NRC 11130</span>
+      </div>
+    </div>
+
+    <!-- MIÉRCOLES -->
+    <div class="day-col">
+      <div class="day-header">
+        <span class="day-name">Miércoles</span>
+        <span class="day-abbr">MI</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">09:50 → 11:05</div>
+        <div class="class-name">Matemática</div>
+        <div class="class-meta">Andrea Casado Flores</div>
+        <div class="class-sala">Sala por confirmar</div>
+        <span class="class-nrc">NRC 23804</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">11:10 → 12:25</div>
+        <div class="class-name">Matemática</div>
+        <div class="class-meta">Andrea Casado Flores</div>
+        <div class="class-sala">Sala por confirmar</div>
+        <span class="class-nrc">NRC 23804</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">12:30 → 13:45</div>
+        <div class="class-name">Matemática</div>
+        <div class="class-meta">Andrea Casado Flores</div>
+        <div class="class-sala">Sala por confirmar</div>
+        <span class="class-nrc">NRC 23804</span>
+      </div>
+    </div>
+
+    <!-- JUEVES -->
+    <div class="day-col">
+      <div class="day-header">
+        <span class="day-name">Jueves</span>
+        <span class="day-abbr">JU</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">11:10 → 12:25</div>
+        <div class="class-name">Introducción a la Programación</div>
+        <div class="class-meta">Maria Jesus Bopp Ibar</div>
+        <div class="class-sala">Sala por confirmar</div>
+        <span class="class-nrc">NRC 23802</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">12:30 → 13:45</div>
+        <div class="class-name">Introducción a la Programación</div>
+        <div class="class-meta">Maria Jesus Bopp Ibar</div>
+        <div class="class-sala">Sala por confirmar</div>
+        <span class="class-nrc">NRC 23802</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">15:10 → 16:25</div>
+        <div class="class-name">Introducc a Programación <span class="badge badge-r">R</span></div>
+        <div class="class-meta">Sebastian Ignacio Perez Orellana</div>
+        <div class="class-sala">Sala por confirmar</div>
+        <span class="class-nrc">NRC 24564</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">16:30 → 17:45</div>
+        <div class="class-name">Introducc a Programación <span class="badge badge-r">R</span></div>
+        <div class="class-meta">Sebastian Ignacio Perez Orellana</div>
+        <div class="class-sala">Sala por confirmar</div>
+        <span class="class-nrc">NRC 24564</span>
+      </div>
+    </div>
+
+    <!-- VIERNES -->
+    <div class="day-col">
+      <div class="day-header">
+        <span class="day-name">Viernes</span>
+        <span class="day-abbr">VI</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">09:50 → 11:05</div>
+        <div class="class-name">Matemática</div>
+        <div class="class-meta">Andrea Casado Flores</div>
+        <div class="class-sala">Sala por confirmar</div>
+        <span class="class-nrc">NRC 23804</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">11:10 → 12:25</div>
+        <div class="class-name">Interacción Hum-Maq I</div>
+        <div class="class-meta">Isidora Josefina Pesce Rossat</div>
+        <div class="class-sala">Sala por confirmar</div>
+        <span class="class-nrc">NRC 23800</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">12:30 → 13:45</div>
+        <div class="class-name">Interacción Hum-Maq I <span class="badge badge-r">R</span></div>
+        <div class="class-meta">Isidora Josefina Pesce Rossat</div>
+        <div class="class-sala">Sala por confirmar</div>
+        <span class="class-nrc">NRC 24615</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">13:50 → 15:05</div>
+        <div class="class-name">Matemática Reserva</div>
+        <div class="class-meta">Andrea Casado Flores</div>
+        <div class="class-sala">Sala por confirmar</div>
+        <span class="class-nrc">NRC 24537</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">15:10 → 16:25</div>
+        <div class="class-name">Intro Ing Interdisciplinar</div>
+        <div class="class-meta">Felipe Antonio Sanhueza Albornoz</div>
+        <div class="class-sala">Sala por confirmar</div>
+        <span class="class-nrc">NRC 23801</span>
+      </div>
+      <div class="class-item">
+        <div class="class-time">16:30 → 17:45</div>
+        <div class="class-name">Intro Ing Interdisciplinar</div>
+        <div class="class-meta">Felipe Antonio Sanhueza Albornoz</div>
+        <div class="class-sala">Sala por confirmar</div>
+        <span class="class-nrc">NRC 23801</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend" style="margin-top: 1.5rem;">
+    <div class="legend-item"><span class="badge badge-r">R</span> Ramo de Reserva</div>
+    <div class="legend-item"><span class="badge badge-ft">FT</span> Finis Terrae (transversal)</div>
+  </div>
+</section>
+
+<div class="red-line"></div>
+
+<!-- MALLA CURRICULAR -->
+<section id="malla">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Malla<br>Curricular</h2>
+  </div>
+
+  <div class="legend" style="margin-bottom: 2rem;">
+    <div class="legend-item"><span class="legend-dot current"></span> Ramos actuales (1° año)</div>
+    <div class="legend-item"><span class="legend-dot future"></span> Semestres futuros</div>
+  </div>
+
+  <div class="malla-wrapper">
+    <div class="malla-grid">
+
+      <!-- HEADER ROW -->
+      <div class="malla-header-cell" style="background: var(--bg);"></div>
+      <div class="malla-header-cell semester-header">SEM 1<br><span style="color:var(--red);font-size:0.5rem;">● ACTUAL</span></div>
+      <div class="malla-header-cell semester-header">SEM 2</div>
+      <div class="malla-header-cell semester-header">SEM 3</div>
+      <div class="malla-header-cell semester-header">SEM 4</div>
+      <div class="malla-header-cell semester-header">SEM 5</div>
+      <div class="malla-header-cell semester-header">SEM 6</div>
+      <div class="malla-header-cell semester-header">SEM 7</div>
+      <div class="malla-header-cell semester-header">SEM 8</div>
+      <div class="malla-header-cell semester-header">SEM 9</div>
+      <div class="malla-header-cell semester-header">SEM 10</div>
+
+      <!-- CIENCIAS BÁSICAS -->
+      <div class="malla-row-label"><div class="row-label-text">Ciencias Básicas y C. Ingeniería</div></div>
+      <div class="malla-cell">
+        <div class="subject-card current"><div class="linea-tag">MAT</div>Matemática</div>
+        <div class="subject-card current"><div class="linea-tag">ING</div>Intro Ing Interdisciplinar</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">MAT</div>Cálculo Diferencial</div>
+        <div class="subject-card"><div class="linea-tag">MAT</div>Álgebra</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">MAT</div>Cálculo Integral</div>
+        <div class="subject-card"><div class="linea-tag">MAT</div>Álgebra Lineal</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">MAT</div>Cálculo Vectorial</div>
+        <div class="subject-card"><div class="linea-tag">FIS</div>Mecánica</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">FIS</div>Ondas y Calor</div>
+        <div class="subject-card"><div class="linea-tag">MAT</div>Ec. Diferenciales</div>
+        <div class="subject-card"><div class="linea-tag">EST</div>Probabilidad y Estadística</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">ELE</div>Electrónica</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">MEC</div>Mecatrónica</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">ING</div>Ing. Económica y Eval. Proyectos</div>
+      </div>
+      <div class="malla-cell"></div>
+      <div class="malla-cell"></div>
+
+      <!-- DISEÑO Y RV -->
+      <div class="malla-row-label"><div class="row-label-text">Diseño y Realidad Extendida</div></div>
+      <div class="malla-cell">
+        <div class="subject-card current"><div class="linea-tag">DIS</div>Fundamentos Interacción Hum-Maq I</div>
+        <div class="subject-card current"><div class="linea-tag">TAL</div>Taller I: Arte y Estética</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">DIS</div>Diseño e Ilustración</div>
+        <div class="subject-card"><div class="linea-tag">TAL</div>Taller II: Narrativa</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">PRG</div>Prog. Entornos Interactivos I</div>
+        <div class="subject-card"><div class="linea-tag">TAL</div>Taller III: Prototipado</div>
+        <div class="subject-card"><div class="linea-tag">DIS</div>Fund. Interacción Hum-Maq II</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">PRG</div>Prog. Entornos Interactivos II</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">3D</div>Modeling and Animation</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">XR</div>Des. Realidad Extendida I</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">XR</div>Des. Realidad Extendida II</div>
+        <div class="subject-card"><div class="linea-tag">ROB</div>Robótica e IoT</div>
+      </div>
+      <div class="malla-cell"></div>
+      <div class="malla-cell"></div>
+      <div class="malla-cell"></div>
+
+      <!-- FUNDAMENTOS IA -->
+      <div class="malla-row-label"><div class="row-label-text">Fundamentos Computación e IA</div></div>
+      <div class="malla-cell">
+        <div class="subject-card current"><div class="linea-tag">PRG</div>Introducción a la Programación</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">PRG</div>Paradigmas de Programación</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">ALG</div>Estructura de Datos y Algoritmos</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">SIS</div>Arquitectura y Sistemas Operativos</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">IA</div>IA y Machine Learning I</div>
+        <div class="subject-card"><div class="linea-tag">NET</div>Redes de Comunicación</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">IA</div>IA y Machine Learning II</div>
+        <div class="subject-card"><div class="linea-tag">EVO</div>Computación Evolutiva</div>
+        <div class="subject-card"><div class="linea-tag">BD</div>Bases de Datos y Nube</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">DL</div>Deep Learning I</div>
+        <div class="subject-card"><div class="linea-tag">HPC</div>High-Performance Computing</div>
+        <div class="subject-card"><div class="linea-tag">LLM</div>Large Language Models I</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">DL</div>Deep Learning II</div>
+        <div class="subject-card"><div class="linea-tag">SIM</div>Simulación Computacional</div>
+        <div class="subject-card"><div class="linea-tag">SW</div>Ingeniería de Software</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">CV</div>Computer Vision</div>
+        <div class="subject-card"><div class="linea-tag">RL</div>Reinforcement Learning</div>
+        <div class="subject-card"><div class="linea-tag">LLM</div>Large Language Models II</div>
+        <div class="subject-card"><div class="linea-tag">OPT</div>Electivo I</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">OPT</div>Electivo II</div>
+      </div>
+
+      <!-- PROYECTOS -->
+      <div class="malla-row-label"><div class="row-label-text">Proyectos y Prácticas</div></div>
+      <div class="malla-cell"></div>
+      <div class="malla-cell"></div>
+      <div class="malla-cell"></div>
+      <div class="malla-cell"></div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">PRY</div>Proyecto I: Software Interactivo</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">PRC</div>Práctica Inicial</div>
+      </div>
+      <div class="malla-cell"></div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">PRY</div>Proyecto II: Virtualización e IA</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">PRC</div>Práctica Pre-Profesional</div>
+        <div class="subject-card"><div class="linea-tag">TIT</div>Proyecto de Título I</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">TIT</div>Proyecto de Título II</div>
+      </div>
+
+      <!-- FINIS TRANSFORMA -->
+      <div class="malla-row-label"><div class="row-label-text">Finis Transforma</div></div>
+      <div class="malla-cell">
+        <div class="subject-card current"><div class="linea-tag">FT</div>Antropología</div>
+        <div class="subject-card current"><div class="linea-tag">FT</div>Taller Pensamiento, Com. y Arte</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">FT</div>Identidad Personal y Proy. de Vida</div>
+        <div class="subject-card"><div class="linea-tag">FT</div>Inglés I</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">FT</div>Ética</div>
+        <div class="subject-card"><div class="linea-tag">FT</div>Inglés II</div>
+      </div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">FT</div>Persona y Trascendencia</div>
+      </div>
+      <div class="malla-cell"></div>
+      <div class="malla-cell"></div>
+      <div class="malla-cell">
+        <div class="subject-card"><div class="linea-tag">FT</div>Minor de Desarrollo Profesional</div>
+      </div>
+      <div class="malla-cell"></div>
+      <div class="malla-cell"></div>
+      <div class="malla-cell"></div>
+
+    </div>
+  </div>
+</section>
+
+<div class="red-line"></div>
+
+<footer>
+  <div class="footer-logo">IA<span>&</span>RV</div>
+  <div class="footer-meta">
+    Universidad Finis Terrae<br>
+    Ingeniería Civil en IA y Realidad Virtual<br>
+    1° Año — Semestre 1 · 2025
+  </div>
+</footer>
+
+</body>
+</html>
