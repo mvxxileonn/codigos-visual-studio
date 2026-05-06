@@ -1,0 +1,34 @@
+string sintoma;
+        char urgencia;
+
+        Console.WriteLine("Ingrese tipo de síntoma (Respiratorio, Digestivo, Dolor general):");
+        sintoma = Console.ReadLine();
+
+        Console.WriteLine("Ingrese nivel de urgencia (A, M, B):");
+        urgencia = char.Parse(Console.ReadLine());
+
+        if (sintoma == "Respiratorio")
+        {
+            if (urgencia == 'A')
+                Console.WriteLine("Atención inmediata en box crítico");
+            else if (urgencia == 'M')
+                Console.WriteLine("Atención prioritaria en menos de 30 minutos");
+            else if (urgencia == 'B')
+                Console.WriteLine("Atención normal en sala general");
+        }
+        else if (sintoma == "Digestivo")
+        {
+            if (urgencia == 'A')
+                Console.WriteLine("Evaluación médica urgente");
+            else
+                Console.WriteLine("Atención en el día");
+        }
+        else if (sintoma == "Dolor general")
+        {
+            if (urgencia == 'A')
+                Console.WriteLine("Evaluación médica urgente");
+            else
+                Console.WriteLine("Control ambulatorio");
+        }
+    }
+}

@@ -1,0 +1,56 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        int P;
+        Console.WriteLine("Ingrese cantidad de máquinas:");
+        P = int.Parse(Console.ReadLine());
+
+        int tareas;
+        string nivel;
+
+        int contJuniorMult4 = 0;
+        int contSeniorMas30 = 0;
+        int contSenior = 0;
+
+        int maxTareas = -1;
+        int indiceMax = 0;
+
+        for (int i = 1; i <= P; i++)
+        {
+            Console.WriteLine("Máquina " + i);
+
+            Console.WriteLine("Ingrese tareas resueltas (0-50):");
+            tareas = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("Ingrese nivel (Junior/Senior):");
+            nivel = Console.ReadLine();
+
+            if (nivel == "Junior" && tareas % 4 == 0)
+                contJuniorMult4++;
+
+            if (nivel == "Senior")
+            {
+                contSenior++;
+
+                if (tareas >= 30)
+                    contSeniorMas30++;
+            }
+
+            if (tareas > maxTareas)
+            {
+                maxTareas = tareas;
+                indiceMax = i;
+            }
+        }
+
+        double porcentajeSenior = (double)contSenior * 100 / P;
+
+        Console.WriteLine("Junior múltiplos de 4: " + contJuniorMult4);
+        Console.WriteLine("Senior con más de 30 tareas: " + contSeniorMas30);
+        Console.WriteLine("Índice de la máquina con más tareas: " + indiceMax);
+        Console.WriteLine("Porcentaje de Senior: " + porcentajeSenior + "%");
+    }
+}

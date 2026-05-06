@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maximiliano León Alfaro</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --red:#e31c1c;
+  --red2:#ff4444;
+  --bg:#000;
+  --surface:rgba(18,18,18,0.85);
+  --border:rgba(255,255,255,0.08);
+  --border2:rgba(255,255,255,0.15);
+  --text:#fff;
+  --muted:#999;
+  --subtle:#555;
+}
+html{scroll-behavior:smooth}
+body{background:#000;color:#fff;font-family:'DM Sans',sans-serif;overflow-x:hidden}
+
+/* CANVAS */
+#bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 40px;display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(20px);background:rgba(0,0,0,0.7);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;background:linear-gradient(135deg,var(--red),var(--red2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+nav ul{list-style:none;display:flex;gap:28px}
+nav a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s}
+nav a:hover{color:#fff}
+
+/* MAIN */
+main{position:relative;z-index:1}
+.container{max-width:820px;margin:0 auto;padding:0 28px}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding:120px 0 80px}
+.hero-inner{position:relative}
+
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:20px;font-weight:500}
+.hero-eyebrow::before{content:'';display:block;width:20px;height:1px;background:var(--red)}
+
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(44px,7vw,80px);font-weight:800;line-height:1.0;letter-spacing:-.04em;margin-bottom:24px}
+.hero h1 .dim{color:rgba(255,255,255,0.25)}
+
+.hero-desc{font-size:17px;line-height:1.8;color:var(--muted);max-width:540px;margin-bottom:32px;font-weight:300}
+.hero-desc strong{color:#fff;font-weight:500}
+
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:32px}
+.meta-pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--subtle);padding:5px 12px;border:1px solid var(--border);border-radius:20px;background:rgba(255,255,255,0.03)}
+
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px}
+.tag{font-size:12px;padding:5px 13px;border-radius:20px;border:1px solid var(--border2);color:var(--muted);background:rgba(255,255,255,0.03);transition:all .2s}
+.tag:hover,.tag.red{border-color:rgba(227,28,28,.4);color:var(--red);background:rgba(227,28,28,.08)}
+
+.btn-row{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 22px;border-radius:8px;font-size:14px;font-weight:500;text-decoration:none;transition:all .2s;cursor:pointer;border:none;font-family:'DM Sans',sans-serif}
+.btn-red{background:var(--red);color:#fff;box-shadow:0 0 28px rgba(227,28,28,.4)}
+.btn-red:hover{background:#ff3333;box-shadow:0 0 40px rgba(227,28,28,.6);transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border2)}
+.btn-ghost:hover{color:#fff;background:rgba(255,255,255,.05);transform:translateY(-2px)}
+
+/* FLOATING CARD 3D effect */
+.card-3d{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:28px;
+  transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease;
+  transform-style:preserve-3d;
+  will-change:transform;
+  cursor:default;
+  backdrop-filter:blur(12px);
+}
+.card-3d:hover{
+  border-color:rgba(227,28,28,.3);
+  box-shadow:0 20px 60px rgba(227,28,28,.12),0 0 0 1px rgba(227,28,28,.15);
+}
+.card-3d .card-shine{
+  position:absolute;inset:0;border-radius:16px;
+  background:radial-gradient(circle at 50% 50%, rgba(255,255,255,.04) 0%, transparent 60%);
+  pointer-events:none;transition:opacity .3s;opacity:0;
+}
+.card-3d:hover .card-shine{opacity:1}
+
+/* SECTIONS */
+section{padding:80px 0;border-top:1px solid var(--border)}
+.section-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle);margin-bottom:40px;display:flex;align-items:center;gap:12px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* EDU */
+.edu-list{display:flex;flex-direction:column;gap:12px}
+.edu-card{position:relative;overflow:hidden;padding-left:28px}
+.edu-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:2px;background:var(--border2)}
+.edu-card.current::before{background:var(--red)}
+.edu-card.prev::before{background:#cc2222}
+.edu-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.edu-head h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.01em}
+.edu-period{font-size:11px;color:var(--subtle);padding:3px 9px;border:1px solid var(--border);border-radius:20px;white-space:nowrap}
+.edu-inst{font-size:13px;color:var(--muted);margin-bottom:4px}
+.edu-note{font-size:12px;color:var(--subtle);line-height:1.6;margin-top:8px;font-style:italic}
+.badge-status{display:inline-block;font-size:11px;padding:2px 9px;border-radius:20px;margin-top:8px;background:rgba(227,28,28,.12);color:var(--red);border:1px solid rgba(227,28,28,.25);font-weight:500}
+
+/* CERTS */
+.certs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.cert-card{position:relative;overflow:hidden}
+.cert-icon{font-size:22px;margin-bottom:12px;display:block}
+.cert-name{font-size:14px;font-weight:500;line-height:1.35;margin-bottom:5px}
+.cert-issuer{font-size:12px;color:var(--muted);margin-bottom:3px}
+.cert-date{font-size:11px;color:var(--subtle)}
+
+/* INTERESTS */
+.int-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.int-card{position:relative;overflow:hidden}
+.int-icon{font-size:26px;margin-bottom:10px;display:block}
+.int-name{font-size:14px;font-weight:500;margin-bottom:4px}
+.int-desc{font-size:12px;color:var(--subtle);line-height:1.5}
+
+/* FOOTER */
+footer{padding:40px 0;border-top:1px solid var(--border);text-align:center;position:relative;z-index:1}
+.footer-name{font-family:'Syne',sans-serif;font-size:13px;color:var(--subtle);margin-bottom:10px}
+.footer-links{display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
+.footer-links a{font-size:12px;color:var(--subtle);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--red)}
+.sep{color:var(--border2)}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{opacity:0;animation:fadeUp .7s ease forwards}
+.delay-1{animation-delay:.1s}.delay-2{animation-delay:.2s}.delay-3{animation-delay:.3s}
+.delay-4{animation-delay:.4s}.delay-5{animation-delay:.5s}.delay-6{animation-delay:.6s}
+
+@keyframes scroll-appear{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.appear{opacity:0}
+.appear.visible{animation:scroll-appear .6s ease forwards}
+
+@media(max-width:600px){
+  nav ul{display:none}
+  nav{padding:14px 20px}
+  .hero{padding:100px 0 60px}
+  .certs-grid,.int-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<nav>
+  <span class="nav-logo">ML</span>
+  <ul>
+    <li><a href="#sobre-mi">Sobre mí</a></li>
+    <li><a href="#educacion">Educación</a></li>
+    <li><a href="#certificaciones">Certs</a></li>
+    <li><a href="https://www.linkedin.com/in/mvxxileonn/" target="_blank">LinkedIn ↗</a></li>
+    <li><a href="https://www.instagram.com/mvxxileonn/" target="_blank">Instagram ↗</a></li>
+  </ul>
+</nav>
+
+<main>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero" id="sobre-mi">
+    <div class="hero-inner">
+      <p class="hero-eyebrow fade-up delay-1">Portafolio personal</p>
+      <h1 class="fade-up delay-2">Maximiliano<br><span class="dim">Hernán</span><br>León Alfaro</h1>
+      <p class="hero-desc fade-up delay-3">
+        Estudiante de <strong>Ingeniería Civil en Inteligencia Artificial y Realidad Virtual</strong>
+        en la Universidad Finis Terrae. Interesado en innovación, desarrollo tecnológico
+        y creación de soluciones basadas en <strong>IA</strong> y entornos inmersivos.
+      </p>
+      <div class="hero-meta fade-up delay-4">
+        <span class="meta-pill">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Santiago, Chile
+        </span>
+        <span class="meta-pill">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          Universidad Finis Terrae
+        </span>
+      </div>
+      <div class="tags fade-up delay-5">
+        <span class="tag red">Inteligencia Artificial</span>
+        <span class="tag red">Realidad Virtual</span>
+        <span class="tag">Innovación</span>
+        <span class="tag">Ciberseguridad</span>
+        <span class="tag">Gestión de proyectos</span>
+        <span class="tag">Marketing Digital</span>
+      </div>
+      <div class="btn-row fade-up delay-6">
+        <a class="btn btn-red" href="https://www.linkedin.com/in/mvxxileonn/" target="_blank">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          LinkedIn
+        </a>
+        <a class="btn btn-ghost" href="https://www.instagram.com/mvxxileonn/" target="_blank">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          Instagram
+        </a>
+        <a class="btn btn-ghost" href="mailto:maxihernan.leonalfaro@gmail.com">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Correo
+        </a>
+        <a class="btn btn-ghost" href="https://wa.me/56979127476" target="_blank">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.523 5.85L0 24l6.335-1.493A11.954 11.954 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.655-.502-5.19-1.381l-.37-.22-3.762.887.936-3.648-.242-.375A9.953 9.953 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+          WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDUCACIÓN -->
+  <section id="educacion">
+    <div class="section-label">Educación</div>
+    <div class="edu-list">
+      <div class="card-3d edu-card current appear" style="position:relative">
+        <div class="card-shine"></div>
+        <div class="edu-head">
+          <h3>Ingeniero Civil en Inteligencia Artificial y Realidad Virtual</h3>
+          <span class="edu-period">mar. 2026 – dic. 2030</span>
+        </div>
+        <div class="edu-inst">Universidad Finis Terrae</div>
+        <span class="badge-status">En curso</span>
+      </div>
+      <div class="card-3d edu-card prev appear" style="position:relative">
+        <div class="card-shine"></div>
+        <div class="edu-head">
+          <h3>Ingeniero de Ejecución en Informática</h3>
+          <span class="edu-period">feb. 2025 – dic. 2025</span>
+        </div>
+        <div class="edu-inst">Universidad de Las Américas (CL)</div>
+        <p class="edu-note">Cursó un año antes de trasladarse a la Universidad Finis Terrae para continuar su formación en IA.</p>
+      </div>
+      <div class="card-3d edu-card appear" style="position:relative">
+        <div class="card-shine"></div>
+        <div class="edu-head">
+          <h3>Enseñanza Básica y Media</h3>
+          <span class="edu-period">feb. 2011 – nov. 2024</span>
+        </div>
+        <div class="edu-inst">Liceo Bicentenario Inmaculada Concepción — Cauquenes</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERTIFICACIONES -->
+  <section id="certificaciones">
+    <div class="section-label">Licencias y certificaciones</div>
+    <div class="certs-grid">
+      <div class="card-3d cert-card appear" style="position:relative">
+        <div class="card-shine"></div>
+        <span class="cert-icon">🔒</span>
+        <div class="cert-name">Fundamentos de ciberseguridad</div>
+        <div class="cert-issuer">LinkedIn Learning Community</div>
+        <div class="cert-date">oct. 2025</div>
+      </div>
+      <div class="card-3d cert-card appear" style="position:relative">
+        <div class="card-shine"></div>
+        <span class="cert-icon">📋</span>
+        <div class="cert-name">Fundamentos de la gestión de proyectos</div>
+        <div class="cert-issuer">LinkedIn Learning Community</div>
+        <div class="cert-date">oct. 2025</div>
+      </div>
+      <div class="card-3d cert-card appear" style="position:relative">
+        <div class="card-shine"></div>
+        <span class="cert-icon">🤖</span>
+        <div class="cert-name">Google: Inteligencia Artificial y productividad</div>
+        <div class="cert-issuer">Santander Open Academy</div>
+        <div class="cert-date">oct. 2025</div>
+      </div>
+      <div class="card-3d cert-card appear" style="position:relative">
+        <div class="card-shine"></div>
+        <span class="cert-icon">📢</span>
+        <div class="cert-name">Storytelling en el Marketing Digital</div>
+        <div class="cert-issuer">Santander Open Academy</div>
+        <div class="cert-date">oct. 2025</div>
+      </div>
+      <div class="card-3d cert-card appear" style="position:relative">
+        <div class="card-shine"></div>
+        <span class="cert-icon">💡</span>
+        <div class="cert-name">Rally Latinoamericano de Innovación 2025</div>
+        <div class="cert-issuer">Universidad de Las Américas (CL)</div>
+        <div class="cert-date">oct. 2025</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERESES -->
+  <section id="intereses">
+    <div class="section-label">Áreas de interés</div>
+    <div class="int-grid">
+      <div class="card-3d int-card appear" style="position:relative">
+        <div class="card-shine"></div>
+        <span class="int-icon">🧠</span>
+        <div class="int-name">Inteligencia Artificial</div>
+        <div class="int-desc">Modelos de aprendizaje, automatización y aplicaciones prácticas de IA.</div>
+      </div>
+      <div class="card-3d int-card appear" style="position:relative">
+        <div class="card-shine"></div>
+        <span class="int-icon">🥽</span>
+        <div class="int-name">Realidad Virtual</div>
+        <div class="int-desc">Entornos inmersivos, XR y experiencias interactivas de próxima generación.</div>
+      </div>
+      <div class="card-3d int-card appear" style="position:relative">
+        <div class="card-shine"></div>
+        <span class="int-icon">🚀</span>
+        <div class="int-name">Innovación tecnológica</div>
+        <div class="int-desc">Soluciones creativas para problemas del mundo real con impacto social.</div>
+      </div>
+      <div class="card-3d int-card appear" style="position:relative">
+        <div class="card-shine"></div>
+        <span class="int-icon">🔐</span>
+        <div class="int-name">Ciberseguridad</div>
+        <div class="int-desc">Fundamentos de seguridad informática y protección de sistemas digitales.</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</main>
+
+<footer>
+  <div class="container">
+    <p class="footer-name">Maximiliano Hernán León Alfaro</p>
+    <div class="footer-links">
+      <a href="https://www.linkedin.com/in/mvxxileonn/" target="_blank">LinkedIn</a>
+      <span class="sep">·</span>
+      <a href="https://www.instagram.com/mvxxileonn/" target="_blank">Instagram</a>
+      <span class="sep">·</span>
+      <a href="https://wa.me/56979127476" target="_blank">WhatsApp</a>
+      <span class="sep">·</span>
+      <a href="mailto:maxihernan.leonalfaro@gmail.com">Correo</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ── THREE.JS BACKGROUND ──
+const canvas = document.getElementById('bg');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 200);
+camera.position.z = 40;
+
+// Particles
+const count = 1800;
+const positions = new Float32Array(count * 3);
+const colors = new Float32Array(count * 3);
+for(let i = 0; i < count; i++){
+  positions[i*3]   = (Math.random()-0.5)*120;
+  positions[i*3+1] = (Math.random()-0.5)*120;
+  positions[i*3+2] = (Math.random()-0.5)*80;
+  const isRed = Math.random() < 0.25;
+  colors[i*3]   = isRed ? 0.89 : 0.3 + Math.random()*0.2;
+  colors[i*3+1] = isRed ? 0.11 : 0.3 + Math.random()*0.2;
+  colors[i*3+2] = isRed ? 0.11 : 0.3 + Math.random()*0.2;
+}
+const geo = new THREE.BufferGeometry();
+geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+const mat = new THREE.PointsMaterial({size:0.22, vertexColors:true, transparent:true, opacity:0.7});
+const particles = new THREE.Points(geo, mat);
+scene.add(particles);
+
+// Floating wireframe spheres
+const spheres = [];
+const sphereData = [
+  {r:6, x:-18, y:8, z:-10, speed:0.003, color:0xe31c1c},
+  {r:3.5, x:20, y:-5, z:-5, speed:0.005, color:0xff4444},
+  {r:2, x:5, y:14, z:-8, speed:0.007, color:0xcc1111},
+  {r:8, x:0, y:-18, z:-20, speed:0.002, color:0x330000},
+];
+sphereData.forEach(d => {
+  const g = new THREE.SphereGeometry(d.r, 12, 8);
+  const m = new THREE.MeshBasicMaterial({color:d.color, wireframe:true, transparent:true, opacity:0.12});
+  const mesh = new THREE.Mesh(g, m);
+  mesh.position.set(d.x, d.y, d.z);
+  mesh.userData.speed = d.speed;
+  mesh.userData.ox = d.x;
+  mesh.userData.oy = d.y;
+  scene.add(mesh);
+  spheres.push(mesh);
+});
+
+// Grid plane
+const gridGeo = new THREE.PlaneGeometry(160, 160, 24, 24);
+const gridMat = new THREE.MeshBasicMaterial({color:0x1a0000, wireframe:true, transparent:true, opacity:0.06});
+const grid = new THREE.Mesh(gridGeo, gridMat);
+grid.rotation.x = -Math.PI/2;
+grid.position.y = -22;
+scene.add(grid);
+
+// Mouse
+let mx = 0, my = 0;
+document.addEventListener('mousemove', e => {
+  mx = (e.clientX/window.innerWidth - 0.5) * 2;
+  my = (e.clientY/window.innerHeight - 0.5) * 2;
+});
+
+// Resize
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// Animate
+let t = 0;
+function animate(){
+  requestAnimationFrame(animate);
+  t += 0.008;
+
+  particles.rotation.y = t * 0.04;
+  particles.rotation.x = t * 0.015;
+
+  spheres.forEach((s,i) => {
+    s.rotation.x += s.userData.speed;
+    s.rotation.y += s.userData.speed * 1.3;
+    s.position.y = s.userData.oy + Math.sin(t + i) * 1.5;
+    s.position.x = s.userData.ox + Math.cos(t * 0.7 + i) * 0.8;
+  });
+
+  camera.position.x += (mx * 3 - camera.position.x) * 0.03;
+  camera.position.y += (-my * 2 - camera.position.y) * 0.03;
+  camera.lookAt(0, 0, 0);
+
+  renderer.render(scene, camera);
+}
+animate();
+
+// ── 3D CARD TILT ──
+document.querySelectorAll('.card-3d').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    card.style.transform = `perspective(800px) rotateY(${x*14}deg) rotateX(${-y*10}deg) translateZ(8px)`;
+    const shine = card.querySelector('.card-shine');
+    if(shine) shine.style.background = `radial-gradient(circle at ${(x+0.5)*100}% ${(y+0.5)*100}%, rgba(255,255,255,0.07) 0%, transparent 60%)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = 'perspective(800px) rotateY(0deg) rotateX(0deg) translateZ(0)';
+  });
+});
+
+// ── SCROLL APPEAR ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) e.target.classList.add('visible');
+  });
+}, {threshold: 0.1});
+document.querySelectorAll('.appear').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

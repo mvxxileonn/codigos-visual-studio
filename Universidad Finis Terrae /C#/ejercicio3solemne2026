@@ -1,0 +1,57 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        int tipo;
+        int altura;
+        bool saludable;
+
+        int contNativo = 0;
+        int contExotico = 0;
+        int contFrutal = 0;
+
+        int total = 0;
+        int sumaAltura = 0;
+
+        int contSaludablesAltos = 0;
+
+        Console.WriteLine("Ingrese tipo de árbol (1=Nativo, 2=Exótico, 3=Frutal, -1=Fin):");
+        tipo = int.Parse(Console.ReadLine());
+
+        while (tipo != -1)
+        {
+            Console.WriteLine("Ingrese altura en cm:");
+            altura = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("¿Está saludable? (true/false):");
+            saludable = bool.Parse(Console.ReadLine());
+
+            if (tipo == 1)
+                contNativo++;
+            else if (tipo == 2)
+                contExotico++;
+            else if (tipo == 3)
+                contFrutal++;
+
+            total++;
+            sumaAltura += altura;
+
+            if (saludable && altura > 140)
+                contSaludablesAltos++;
+
+            Console.WriteLine("Ingrese tipo de árbol (1=Nativo, 2=Exótico, 3=Frutal, -1=Fin):");
+            tipo = int.Parse(Console.ReadLine());
+        }
+
+        double promedio = (double)sumaAltura / total;
+        double porcentaje = (double)contSaludablesAltos * 100 / total;
+
+        Console.WriteLine("Nativos: " + contNativo);
+        Console.WriteLine("Exóticos: " + contExotico);
+        Console.WriteLine("Frutales: " + contFrutal);
+        Console.WriteLine("Promedio altura: " + promedio);
+        Console.WriteLine("Porcentaje saludables y >140cm: " + porcentaje + "%");
+    }
+}
