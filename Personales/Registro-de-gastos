@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Gastos</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0a0a0a; font-family: 'Courier New', monospace; color: #f0f0f0; min-height: 100vh; }
+    .app { max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; }
+    h1 { font-size: 22px; font-weight: 500; color: #fff; letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid #e63030; padding-bottom: 0.75rem; margin-bottom: 1.5rem; }
+    .mes-selector { display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem; }
+    .mes-selector label { font-size: 12px; color: #e63030; text-transform: uppercase; letter-spacing: 0.1em; }
+    .mes-selector input { background: #1a1a1a; border: 0.5px solid #333; color: #fff; padding: 6px 10px; font-family: inherit; font-size: 13px; border-radius: 4px; }
+    .resumen { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+    .card { background: #151515; border: 0.5px solid #2a2a2a; border-radius: 6px; padding: 0.85rem 1rem; }
+    .card .label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+    .card .valor { font-size: 20px; font-weight: 500; color: #fff; }
+    .card.rojo .valor { color: #e63030; }
+    .form-gasto { background: #151515; border: 0.5px solid #2a2a2a; border-radius: 6px; padding: 1rem; margin-bottom: 1.5rem; }
+    .form-titulo { font-size: 11px; color: #e63030; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; }
+    .form-row { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 8px; align-items: end; }
+    .field label { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 4px; }
+    .field input, .field select { background: #0d0d0d; border: 0.5px solid #333; color: #f0f0f0; padding: 7px 10px; font-family: inherit; font-size: 13px; border-radius: 4px; width: 100%; }
+    .field input:focus, .field select:focus { outline: none; border-color: #e63030; }
+    .field select option { background: #1a1a1a; }
+    .btn-add { background: #e63030; color: #fff; border: none; padding: 7px 16px; font-family: inherit; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; border-radius: 4px; cursor: pointer; white-space: nowrap; height: 32px; }
+    .btn-add:hover { background: #cc2525; }
+    .tabla-header { display: grid; grid-template-columns: 2fr 1fr 1.2fr 80px; gap: 8px; padding: 6px 10px; margin-bottom: 4px; }
+    .tabla-header span { font-size: 10px; color: #e63030; text-transform: uppercase; letter-spacing: 0.1em; }
+    .lista { display: flex; flex-direction: column; gap: 4px; }
+    .gasto-item { display: grid; grid-template-columns: 2fr 1fr 1.2fr 80px; gap: 8px; align-items: center; background: #151515; border: 0.5px solid #222; border-radius: 5px; padding: 8px 10px; transition: border-color 0.15s; }
+    .gasto-item:hover { border-color: #333; }
+    .gasto-nombre { font-size: 14px; color: #f0f0f0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .gasto-monto { font-size: 14px; color: #e63030; font-weight: 500; text-align: right; }
+    .cat-badge { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; border: 0.5px solid #333; color: #888; }
+    .btn-del { background: none; border: none; color: #333; cursor: pointer; font-size: 14px; padding: 2px 6px; border-radius: 3px; transition: color 0.15s; }
+    .btn-del:hover { color: #e63030; }
+    .empty { text-align: center; padding: 2rem; color: #333; font-size: 13px; letter-spacing: 0.05em; }
+    .filtros { display: flex; gap: 6px; margin-bottom: 0.75rem; flex-wrap: wrap; }
+    .filtro-btn { background: none; border: 0.5px solid #2a2a2a; color: #555; padding: 4px 10px; font-family: inherit; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; border-radius: 3px; cursor: pointer; transition: all 0.15s; }
+    .filtro-btn:hover, .filtro-btn.active { border-color: #e63030; color: #e63030; }
+    .seccion-titulo { font-size: 11px; color: #e63030; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; margin-top: 1.25rem; }
+    .email-panel { background: #151515; border: 0.5px solid #2a2a2a; border-radius: 6px; padding: 1rem; margin-top: 1.5rem; }
+    .email-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: end; }
+    .btn-enviar { background: none; border: 0.5px solid #e63030; color: #e63030; padding: 7px 18px; font-family: inherit; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; border-radius: 4px; cursor: pointer; white-space: nowrap; height: 32px; transition: all 0.15s; }
+    .btn-enviar:hover { background: #e63030; color: #fff; }
+    .btn-enviar:disabled { opacity: 0.4; cursor: not-allowed; }
+    .toast { display: none; margin-top: 10px; padding: 8px 12px; border-radius: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.07em; border: 0.5px solid #333; }
+    .toast.ok { border-color: #4caf50; color: #4caf50; display: block; }
+    .toast.err { border-color: #e63030; color: #e63030; display: block; }
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr 1fr; }
+      .form-row .btn-add { grid-column: span 2; }
+      .resumen { grid-template-columns: 1fr; }
+      .tabla-header, .gasto-item { grid-template-columns: 2fr 1fr auto; }
+      .tabla-header span:nth-child(3), .gasto-item .cat-badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>&#9632; Registro de Gastos</h1>
+
+    <div class="mes-selector">
+      <label>Mes</label>
+      <input type="month" id="mes-input">
+    </div>
+
+    <div class="resumen">
+      <div class="card rojo">
+        <div class="label">Total gastado</div>
+        <div class="valor" id="total">$0 CLP</div>
+      </div>
+      <div class="card">
+        <div class="label">N° de gastos</div>
+        <div class="valor" id="cantidad">0</div>
+      </div>
+      <div class="card">
+        <div class="label">Promedio diario</div>
+        <div class="valor" id="promedio">$0 CLP</div>
+      </div>
+    </div>
+
+    <div class="form-gasto">
+      <div class="form-titulo">+ Agregar gasto</div>
+      <div class="form-row">
+        <div class="field">
+          <label>Descripción</label>
+          <input type="text" id="inp-nombre" placeholder="Ej: Supermercado — $15.000 CLP">
+        </div>
+        <div class="field">
+          <label>Monto (CLP)</label>
+          <input type="number" id="inp-monto" placeholder="0" min="0">
+        </div>
+        <div class="field">
+          <label>Categoría</label>
+          <select id="inp-cat">
+            <option value="Alimentación">Alimentación</option>
+            <option value="Transporte">Transporte</option>
+            <option value="Vivienda">Vivienda</option>
+            <option value="Salud">Salud</option>
+            <option value="Entretenimiento">Entretenimiento</option>
+            <option value="Ropa">Ropa</option>
+            <option value="Educación">Educación</option>
+            <option value="Servicios">Servicios</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <button class="btn-add" onclick="agregarGasto()">Agregar</button>
+      </div>
+    </div>
+
+    <div class="seccion-titulo">Gastos registrados</div>
+    <div class="filtros" id="filtros">
+      <button class="filtro-btn active" onclick="filtrar('Todos', this)">Todos</button>
+    </div>
+    <div class="tabla-header">
+      <span>Descripción</span>
+      <span style="text-align:right">Monto</span>
+      <span>Categoría</span>
+      <span></span>
+    </div>
+    <div class="lista" id="lista">
+      <div class="empty">Sin gastos registrados este mes.</div>
+    </div>
+
+    <div class="email-panel">
+      <div class="form-titulo">&#9993; Enviar cartola por correo</div>
+      <div class="email-row">
+        <div class="field">
+          <label>Correo destinatario</label>
+          <input type="email" id="inp-email" placeholder="ejemplo@correo.com">
+        </div>
+        <button class="btn-enviar" id="btn-enviar" onclick="enviarCartola()">Enviar</button>
+      </div>
+      <div class="toast" id="toast"></div>
+    </div>
+  </div>
+
+  <script>
+    let gastos = [];
+    let filtroActivo = 'Todos';
+    let enviando = false;
+
+    const mesInput = document.getElementById('mes-input');
+    const now = new Date();
+    mesInput.value = now.toISOString().slice(0, 7);
+
+    const clp = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 });
+    function fmt(n) {
+      return clp.format(Math.round(n)) + ' CLP';
+    }
+
+    function agregarGasto() {
+      const nombre = document.getElementById('inp-nombre').value.trim();
+      const monto = parseFloat(document.getElementById('inp-monto').value);
+      const cat = document.getElementById('inp-cat').value;
+      if (!nombre || isNaN(monto) || monto <= 0) return;
+      gastos.push({ id: Date.now(), nombre, monto, cat });
+      document.getElementById('inp-nombre').value = '';
+      document.getElementById('inp-monto').value = '';
+      renderTodo();
+    }
+
+    function eliminar(id) {
+      gastos = gastos.filter(g => g.id !== id);
+      renderTodo();
+    }
+
+    function filtrar(cat, btn) {
+      filtroActivo = cat;
+      document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderLista();
+    }
+
+    function renderTodo() {
+      const total = gastos.reduce((s, g) => s + g.monto, 0);
+      const dias = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      document.getElementById('total').textContent = fmt(total);
+      document.getElementById('cantidad').textContent = gastos.length;
+      document.getElementById('promedio').textContent = fmt(total / dias);
+      renderFiltros();
+      renderLista();
+    }
+
+    function renderFiltros() {
+      const cats = ['Todos', ...new Set(gastos.map(g => g.cat))];
+      const div = document.getElementById('filtros');
+      div.innerHTML = cats.map(c =>
+        `<button class="filtro-btn${filtroActivo === c ? ' active' : ''}" onclick="filtrar('${c}', this)">${c}</button>`
+      ).join('');
+    }
+
+    function renderLista() {
+      const lista = document.getElementById('lista');
+      const filtrados = filtroActivo === 'Todos' ? gastos : gastos.filter(g => g.cat === filtroActivo);
+      if (!filtrados.length) {
+        lista.innerHTML = '<div class="empty">Sin gastos registrados este mes.</div>';
+        return;
+      }
+      lista.innerHTML = [...filtrados].reverse().map(g => `
+        <div class="gasto-item">
+          <div class="gasto-nombre">${g.nombre}</div>
+          <div class="gasto-monto">${fmt(g.monto)}</div>
+          <div><span class="cat-badge">${g.cat}</span></div>
+          <div style="text-align:right"><button class="btn-del" onclick="eliminar(${g.id})">✕</button></div>
+        </div>
+      `).join('');
+    }
+
+    function buildCartola() {
+      const mes = mesInput.value;
+      const total = gastos.reduce((s, g) => s + g.monto, 0);
+      const dias = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      const promedio = Math.round(total / dias);
+
+      const porCat = {};
+      gastos.forEach(g => { porCat[g.cat] = (porCat[g.cat] || 0) + g.monto; });
+      const resumenCat = Object.entries(porCat).sort((a, b) => b[1] - a[1])
+        .map(([c, m]) => `- ${c}: ${fmt(m)}`).join('\n');
+
+      const detalles = [...gastos].reverse()
+        .map((g, i) => `${i + 1}. ${g.nombre} | ${g.cat} | ${fmt(g.monto)}`).join('\n');
+
+      return {
+        subject: `Cartola de gastos — ${mes}`,
+        body: `CARTOLA DE GASTOS — ${mes}\n${'='.repeat(40)}\n\nRESUMEN\nTotal gastado: ${fmt(total)}\nN° de gastos: ${gastos.length}\nPromedio diario: ${fmt(promedio)}\n\nPOR CATEGORÍA\n${resumenCat || 'Sin datos'}\n\nDETALLE\n${detalles || 'Sin gastos registrados'}\n\n${'='.repeat(40)}\nGenerado desde Registro de Gastos`
+      };
+    }
+
+    function abrirEnMailto() {
+      const email = document.getElementById('inp-email').value.trim();
+      const toast = document.getElementById('toast');
+      toast.className = 'toast';
+      toast.textContent = '';
+
+      if (!email || !email.includes('@')) {
+        toast.textContent = 'Ingresa un correo válido.';
+        toast.className = 'toast err';
+        return;
+      }
+      if (gastos.length === 0) {
+        toast.textContent = 'No hay gastos registrados para enviar.';
+        toast.className = 'toast err';
+        return;
+      }
+
+      const cartola = buildCartola();
+      const mailto = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(cartola.subject)}&body=${encodeURIComponent(cartola.body)}`;
+      window.open(mailto, '_blank');
+      toast.textContent = 'Se abrió tu cliente de correo con la cartola lista.';
+      toast.className = 'toast ok';
+    }
+
+    document.getElementById('btn-enviar').onclick = abrirEnMailto;
+
+    document.getElementById('inp-monto').addEventListener('keydown', e => {
+      if (e.key === 'Enter') agregarGasto();
+    });
+    document.getElementById('inp-nombre').addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('inp-monto').focus();
+    });
+  </script>
+</body>
+</html>
