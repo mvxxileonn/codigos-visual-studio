@@ -1,0 +1,61 @@
+// ejercicio 1
+int N;
+int pares = 0, impares = 0;
+console.writeline("Ingrese un numero entero: ");
+int .parse(console.readline());
+int [] numeros = new int[N]; 
+for (int i = 0; i < N; i++)
+{
+    console.writeline($"Ingrese el numero {i + 1}: ");
+    numeros[i] = int.parse(console.readline());
+    if (numeros[i] % 2 == 0)
+    {
+        pares++;
+    }
+    else
+    {
+        impares++;
+    }
+}
+console.writeline($"Cantidad de numeros pares: {pares}");
+console.writeline($"Cantidad de numeros impares: {impares}");
+
+// ejercicio 2
+console.writeline("Ingrese el tamaño del arreglo N: ");
+int N = int.parse(console.readline());
+string[] nombres = new string[N];
+for (int i = 0; i < N; i++)
+{
+    console.writeline($"Ingrese el nombre {i + 1}: ");
+    nombres[i] = console.readline();
+}
+console.writeline("Ingrese el nombre a buscar: ");
+string nombreBuscar = console.readline();
+int coincidencias = 0;
+for (int i = 0; i < N; i++)
+{
+    if (nombres[i] == nombreBuscar)
+    {
+        console.writeline($"Se encontró el nombre en la posición {i}");
+        coincidencias++;
+    }
+}
+console.writeline($"Cantidad total de coincidencias: {coincidencias}");
+
+
+// ejercicio 3
+console.writeline("Ingrese la cantidad de números a generar: ");
+int n = int.parse(console.readline());
+console.writeline("Ingrese el valor mínimo: ");
+int min = int.parse(console.readline());
+console.writeline("Ingrese el valor máximo: ");
+int max = int.parse(console.readline());
+
+Random rand = new Random();
+//Sentencia requerida para utilizar valores aleatorios (solo se escribe una vez)
+
+
+
+
+int x = rand.Next(min, max + 1);
+//Para obtener un valor aleatorio entre min (inclusivo) y max (inclusivo) y guardarlo en una variable x.
