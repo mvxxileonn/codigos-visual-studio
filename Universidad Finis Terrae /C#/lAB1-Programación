@@ -1,0 +1,75 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        // Ejercicio 1
+        Console.WriteLine("Ejercicio 1:");
+        Console.WriteLine("Inicio");
+        Console.WriteLine("|");
+        Console.WriteLine("| Elegir una fecha para la fiesta");
+        Console.WriteLine("| Invitar a los amigos sin que la persona lo sepa");
+        Console.WriteLine("| Decorar la casa el día de la fiesta");
+        Console.WriteLine("| Esconderse cuando la persona llegue");
+        Console.WriteLine("| Gritar ¡sorpresa! cuando entre");
+        Console.WriteLine("|");
+        Console.WriteLine("Fin");
+
+        Console.WriteLine();
+
+        // Ejercicio 2
+        Console.WriteLine("Ejercicio 2:");
+        Console.Write("Ingrese enemigos derrotados: ");
+        int enemigos = int.Parse(Console.ReadLine());
+
+        Console.Write("Ingrese coleccionables obtenidos: ");
+        int coleccionables = int.Parse(Console.ReadLine());
+
+        int puntaje = enemigos * 100 + coleccionables * 10;
+        Console.WriteLine("Puntaje total: " + puntaje);
+
+        Console.WriteLine();
+
+        // Ejercicio 3
+        Console.WriteLine("Ejercicio 3:");
+        Console.Write("Ingrese la base del triángulo: ");
+        float baseTriangulo = float.Parse(Console.ReadLine());
+
+        Console.Write("Ingrese la altura del triángulo: ");
+        float alturaTriangulo = float.Parse(Console.ReadLine());
+
+        float areaTriangulo = baseTriangulo * alturaTriangulo / 2;
+        Console.WriteLine("Área del triángulo: " + areaTriangulo);
+
+        Console.WriteLine();
+
+        // Ejercicio 4
+        Console.WriteLine("Ejercicio 4:");
+        Console.Write("Ingrese el ancho del rectángulo: ");
+        float ancho = float.Parse(Console.ReadLine());
+
+        Console.Write("Ingrese el alto del rectángulo: ");
+        float alto = float.Parse(Console.ReadLine());
+
+        float perimetro = 2 * (ancho + alto);
+        float areaRectangulo = ancho * alto;
+
+        Console.WriteLine("Perímetro del rectángulo: " + perimetro);
+        Console.WriteLine("Área del rectángulo: " + areaRectangulo);
+
+        Console.WriteLine();
+
+        // Ejercicio 5
+        Console.WriteLine("Ejercicio 5:");
+        const float PI = 3.1416f;
+
+        Console.Write("Ingrese el ángulo en grados: ");
+        float grados = float.Parse(Console.ReadLine());
+
+        float radianes = grados * PI / 180;
+
+        Console.WriteLine("Ángulo en radianes: " + radianes);
+        Console.WriteLine("Ángulo en grados: " + grados);
+    }
+}

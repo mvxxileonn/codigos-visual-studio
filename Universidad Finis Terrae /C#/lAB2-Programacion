@@ -1,0 +1,89 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        // EJERCICIO 1
+        Console.WriteLine("EJERCICIO 1");
+
+        Console.Write("Ingrese su edad: ");
+        int edad = int.Parse(Console.ReadLine());
+
+        Console.Write("¿Va acompañado de un adulto? (si/no): ");
+        string acompanado = Console.ReadLine();
+
+        Console.Write("¿Tiene pase especial? (si/no): ");
+        string pase = Console.ReadLine();
+
+        if (edad >= 18 || acompanado == "si" || pase == "si")
+        {
+            Console.WriteLine("Puede ingresar al evento");
+        }
+        else
+        {
+            Console.WriteLine("No puede ingresar al evento");
+        }
+
+        Console.WriteLine();
+
+        // EJERCICIO 2
+        Console.WriteLine("EJERCICIO 2");
+
+        Console.Write("Ingrese el primer número: ");
+        int n1 = int.Parse(Console.ReadLine());
+
+        Console.Write("Ingrese el segundo número: ");
+        int n2 = int.Parse(Console.ReadLine());
+
+        Console.Write("Ingrese el tercer número: ");
+        int n3 = int.Parse(Console.ReadLine());
+
+        int suma = n1 + n2 + n3;
+        int producto = n1 * n2 * n3;
+
+        Console.WriteLine("Suma: " + suma);
+        Console.WriteLine("Producto: " + producto);
+
+        if (suma < 50)
+        {
+            Console.WriteLine("SUMA BAJA");
+        }
+        else
+        {
+            Console.WriteLine("SUMA ALTA");
+        }
+
+        if (producto % 2 == 0)
+        {
+            Console.WriteLine("El producto es PAR");
+        }
+        else
+        {
+            Console.WriteLine("El producto es IMPAR");
+        }
+
+        Console.WriteLine();
+
+        // EJERCICIO 3
+        Console.WriteLine("EJERCICIO 3");
+
+        Console.Write("Ingrese su edad: ");
+        int edadCliente = int.Parse(Console.ReadLine());
+
+        Console.Write("Ingrese sus ingresos mensuales: ");
+        int ingresos = int.Parse(Console.ReadLine());
+
+        if (edadCliente >= 21 && ingresos > 500000)
+        {
+            int credito = ingresos * 3;
+
+            Console.WriteLine("Crédito aprobado");
+            Console.WriteLine("Monto máximo aprobado: $" + credito);
+        }
+        else
+        {
+            Console.WriteLine("Crédito rechazado");
+        }
+    }
+}

@@ -1,0 +1,54 @@
+Console.Write("Ingrese un número: ");
+int n = int.Parse(Console.ReadLine());
+Console.WriteLine($"Los primeros 10 múltiplos de {n} son:");
+for (int i = 1; i <= 10; i++)
+{
+    Console.WriteLine(n * i);
+}
+
+        Console.Write("Ingrese el valor de N: ");
+        int n = int.Parse(Console.ReadLine());
+
+        Console.Write("Ingrese el valor de M: ");
+        int m = int.Parse(Console.ReadLine());
+
+        // Validar que N sea menor o igual a M
+        if (n > m)
+        {
+            Console.WriteLine("Error: N debe ser menor o igual a M.");
+            return;
+        }
+
+        // Función de sumatoria: suma de 1 hasta x = x * (x + 1) / 2
+        int sumaM = m * (m + 1) / 2;
+        int sumaNmenos1 = (n - 1) * n / 2;
+
+        int resultado = sumaM - sumaNmenos1;
+
+        Console.WriteLine($"La sumatoria desde {n} hasta {m} es: {resultado}");
+    
+    Console.Write("Ingrese un número: ");
+    int n = int.Parse(Console.ReadLine());
+    long factorial = 1;
+    if (n < 0)
+    {
+        Console.WriteLine("El factorial no está definido para números negativos.");
+        return;
+    }
+    for (int i = 1; i <= n; i++)
+    {
+        factorial *= i;
+    }
+    Console.WriteLine($"El factorial de {n} es: {factorial}");
+
+
+Console.Write("Ingrese la altura de la pirámide: ");
+int n = int.Parse(Console.ReadLine());
+for (int i = 1; i <= n; i++)
+{
+    for (int j = 1; j <= i; j++)
+    {
+        Console.Write("* ");
+    }
+    Console.WriteLine();
+}
