@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+
+def calcular(a, b, operador):
+    if operador == '+':
+        return a + b
+    elif operador == '-':
+        return a - b
+    elif operador == '*':
+        return a * b
+    elif operador == '/':
+        return a / b if b != 0 else None
+    else:
+        return None
+
+
+def leer_numero(texto):
+    while True:
+        try:
+            return float(input(texto))
+        except ValueError:
+            print('Entrada no válida. Intenta de nuevo.')
+
+
+def main():
+    print('Calculadora básica')
+    while True:
+        a = leer_numero('Número 1: ')
+        operador = input('Operador (+ - * /): ').strip()
+        b = leer_numero('Número 2: ')
+
+        resultado = calcular(a, b, operador)
+        if resultado is None:
+            print('Operación no válida o división por cero.')
+        else:
+            print(f'Resultado: {resultado}')
+
+        otra = input('¿Otra operación? (s/n): ').strip().lower()
+        if otra != 's':
+            break
+
+
+if __name__ == '__main__':
+    main()
