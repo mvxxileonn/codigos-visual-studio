@@ -1,0 +1,141 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    //EJERCICIO 1
+    static void Main()
+    {
+        Console.Write("Ingrese N (cantidad de enteros): ");
+        if (!int.TryParse(Console.ReadLine(), out int N) || N <= 0)
+        {
+            Console.WriteLine("N inválido");
+            return;
+        }
+        int[] a = new int[N];
+        for (int i = 0; i < N; i++)
+        {
+            Console.Write($"Ingrese elemento [{i}]: ");
+            while (!int.TryParse(Console.ReadLine(), out a[i]))
+                Console.Write("Valor inválido. Reingrese: ");
+        }
+        Console.Write("Ingrese K (índice desde 0 hasta " + (N - 1) + "): ");
+        if (!int.TryParse(Console.ReadLine(), out int K) || K < 0 || K >= N)
+        {
+            Console.WriteLine("K inválido");
+            return;
+        }
+
+        // 1. En orden normal
+        PrintArray(a);
+
+        // 2. En orden inverso
+        int[] rev = new int[N];
+        for (int i = 0; i < N; i++) rev[i] = a[N - 1 - i];
+        PrintArray(rev);
+
+        // 3. Primero pares luego impares
+        List<int> pares = new List<int>();
+        List<int> impares = new List<int>();
+        foreach (var v in a) (v % 2 == 0 ? pares : impares).Add(v);
+        List<int> combined = new List<int>();
+        combined.AddRange(pares);
+        combined.AddRange(impares);
+        PrintArray(combined.ToArray());
+
+        // 4. Desde K hasta N-1, luego 0 hasta K-1
+        int[] rot = new int[N];
+        int idx = 0;
+        for (int i = K; i < N; i++) rot[idx++] = a[i];
+        for (int i = 0; i < K; i++) rot[idx++] = a[i];
+        PrintArray(rot);
+    }
+
+    static void PrintArray(int[] arr)
+    {
+        Console.Write("[");
+        for (int i = 0; i < arr.Length; i++)
+        {
+            Console.Write(arr[i]);
+            if (i < arr.Length - 1) Console.Write(", ");
+        }
+        Console.WriteLine("]");
+    }
+}
+
+//EJERCICIO 2
+class ExamenAlternativas
+{
+    static void Main2()
+    {
+        Console.Write("\nIngrese N (cantidad de preguntas): ");
+        if (!int.TryParse(Console.ReadLine(), out int N) || N <= 0)
+        {
+            Console.WriteLine("N inválido");
+            return;
+        }
+
+        // Ingresar pauta
+        char[] pauta = new char[N];
+        Console.WriteLine("Ingrese la pauta (respuestas correctas):");
+        for (int i = 0; i < N; i++)
+        {
+            Console.Write($"Pregunta [{i}] (a/b/c/d/e): ");
+            string input = Console.ReadLine().ToLower();
+            while (string.IsNullOrEmpty(input) || input.Length != 1 || !"abcde".Contains(input))
+                input = (Console.Write("Valor inválido. Reingrese: "), Console.ReadLine().ToLower());
+            pauta[i] = char.Parse(input);
+        }
+
+        // Ingresar respuestas de 3 alumnos
+        char[][] alumnos = new char[3][];
+        for (int alumno = 0; alumno < 3; alumno++)
+        {
+            alumnos[alumno] = new char[N];
+            Console.WriteLine($"\nIngrese las respuestas del alumno {alumno + 1}:");
+            for (int i = 0; i < N; i++)
+            {
+                Console.Write($"Pregunta [{i}] (a/b/c/d/e): ");
+                string input = Console.ReadLine().ToLower();
+                while (string.IsNullOrEmpty(input) || input.Length != 1 || !"abcde".Contains(input))
+                    input = (Console.Write("Valor inválido. Reingrese: "), Console.ReadLine().ToLower());
+                alumnos[alumno][i] = char.Parse(input);
+            }
+        }
+
+        // Alumno 1: Verificar si todas las respuestas son correctas
+        bool todasCorrectas = true;
+        for (int i = 0; i < N; i++)
+        {
+            if (alumnos[0][i] != pauta[i])
+            {
+                todasCorrectas = false;
+                break;
+            }
+        }
+        Console.WriteLine($"\nAlumno 1 - ¿Todas las respuestas correctas? {todasCorrectas}");
+
+        // Alumno 2: Verificar si al menos una respuesta es correcta
+        bool almenunaCorrecta = false;
+        for (int i = 0; i < N; i++)
+        {
+            if (alumnos[1][i] == pauta[i])
+            {
+                almenunaCorrecta = true;
+                break;
+            }
+        }
+        Console.WriteLine($"Alumno 2 - ¿Al menos una respuesta correcta? {almenunaCorrecta}");
+
+        // Alumno 3: Contar correctas e incorrectas
+        int correctas = 0, incorrectas = 0;
+        for (int i = 0; i < N; i++)
+        {
+            if (alumnos[2][i] == pauta[i])
+                correctas++;
+            else
+                incorrectas++;
+        }
+        Console.WriteLine($"Alumno 3 - Respuestas correctas: {correctas}, Incorrectas: {incorrectas}");
+    }
+}
