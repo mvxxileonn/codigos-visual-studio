@@ -1,0 +1,15 @@
+/Users/mvxxileonn/Downloads/PROGRAMAS/MiProyecto/bin/Debug/net10.0/MiProyecto
+/Users/mvxxileonn/Downloads/PROGRAMAS/MiProyecto/bin/Debug/net10.0/MiProyecto.deps.json
+/Users/mvxxileonn/Downloads/PROGRAMAS/MiProyecto/bin/Debug/net10.0/MiProyecto.runtimeconfig.json
+/Users/mvxxileonn/Downloads/PROGRAMAS/MiProyecto/bin/Debug/net10.0/MiProyecto.dll
+/Users/mvxxileonn/Downloads/PROGRAMAS/MiProyecto/bin/Debug/net10.0/MiProyecto.pdb
+/Users/mvxxileonn/Downloads/PROGRAMAS/MiProyecto/obj/Debug/net10.0/MiProyecto.GeneratedMSBuildEditorConfig.editorconfig
+/Users/mvxxileonn/Downloads/PROGRAMAS/MiProyecto/obj/Debug/net10.0/MiProyecto.AssemblyInfoInputs.cache
+/Users/mvxxileonn/Downloads/PROGRAMAS/MiProyecto/obj/Debug/net10.0/MiProyecto.AssemblyInfo.cs
+/Users/mvxxileonn/Downloads/PROGRAMAS/MiProyecto/obj/Debug/net10.0/MiProyecto.csproj.CoreCompileInputs.cache
+/Users/mvxxileonn/Downloads/PROGRAMAS/MiProyecto/obj/Debug/net10.0/MiProyecto.sourcelink.json
+/Users/mvxxileonn/Downloads/PROGRAMAS/MiProyecto/obj/Debug/net10.0/MiProyecto.dll
+/Users/mvxxileonn/Downloads/PROGRAMAS/MiProyecto/obj/Debug/net10.0/refint/MiProyecto.dll
+/Users/mvxxileonn/Downloads/PROGRAMAS/MiProyecto/obj/Debug/net10.0/MiProyecto.pdb
+/Users/mvxxileonn/Downloads/PROGRAMAS/MiProyecto/obj/Debug/net10.0/MiProyecto.genruntimeconfig.cache
+/Users/mvxxileonn/Downloads/PROGRAMAS/MiProyecto/obj/Debug/net10.0/ref/MiProyecto.dll
