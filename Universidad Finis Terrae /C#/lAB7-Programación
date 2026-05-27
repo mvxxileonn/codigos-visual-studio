@@ -1,0 +1,10 @@
+// Simple C# console program that prints a greeting in Spanish.
+using System;
+
+class Program
+{
+	static void Main(string[] args)
+	{
+		Console.WriteLine("Hola Programador");
+	}
+}

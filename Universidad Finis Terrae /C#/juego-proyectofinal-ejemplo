@@ -1,0 +1,221 @@
+using System;
+
+class Program
+{
+    static int filas = 11;
+    static int columnas = 15;
+
+    static int[,] mapa =
+    {
+        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+        {1,9,0,0,2,0,0,0,2,0,0,0,2,3,1},
+        {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1},
+        {1,0,2,0,0,0,2,0,0,0,2,0,0,0,1},
+        {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1},
+        {1,0,0,0,2,0,0,0,2,0,0,0,2,0,1},
+        {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1},
+        {1,0,2,0,0,0,2,0,0,0,2,0,0,0,1},
+        {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1},
+        {1,0,0,0,2,0,0,0,2,0,0,0,2,0,1},
+        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+    };
+
+    static int jugadorX = 1;
+    static int jugadorY = 1;
+
+    static bool bombaActiva = false;
+    static int bombaX;
+    static int bombaY;
+    static int timerBomba = 0;
+
+    static bool juegoActivo = true;
+
+    static void Main()
+    {
+        Console.CursorVisible = false;
+
+        while (juegoActivo)
+        {
+            Console.Clear();
+
+            DibujarMapa();
+
+            Console.WriteLine();
+            Console.WriteLine("WASD = Mover");
+            Console.WriteLine("ESPACIO = Colocar bomba");
+
+            ActualizarBomba();
+
+            ConsoleKeyInfo tecla = Console.ReadKey(true);
+
+            ProcesarEntrada(tecla);
+
+            VerificarVictoria();
+        }
+
+        Console.WriteLine("Fin del juego.");
+    }
+
+    static void DibujarMapa()
+    {
+        for (int i = 0; i < filas; i++)
+        {
+            for (int j = 0; j < columnas; j++)
+            {
+                switch (mapa[i, j])
+                {
+                    case 0:
+                        Console.Write("  ");
+                        break;
+
+                    case 1:
+                        Console.Write("█");
+                        break;
+
+                    case 2:
+                        Console.Write("▓");
+                        break;
+
+                    case 3:
+                        Console.Write("▓");
+                        break;
+
+                    case 4:
+                        Console.Write("B");
+                        break;
+
+                    case 7:
+                        Console.Write("P");
+                        break;
+
+                    case 9:
+                        Console.Write("J");
+                        break;
+                }
+            }
+
+            Console.WriteLine();
+        }
+    }
+
+    static void ProcesarEntrada(ConsoleKeyInfo tecla)
+    {
+        int nuevoX = jugadorX;
+        int nuevoY = jugadorY;
+
+        switch (tecla.Key)
+        {
+            case ConsoleKey.W:
+                nuevoY--;
+                break;
+
+            case ConsoleKey.S:
+                nuevoY++;
+                break;
+
+            case ConsoleKey.A:
+                nuevoX--;
+                break;
+
+            case ConsoleKey.D:
+                nuevoX++;
+                break;
+
+            case ConsoleKey.Spacebar:
+                ColocarBomba();
+                return;
+        }
+
+        MoverJugador(nuevoX, nuevoY);
+    }
+
+    static void MoverJugador(int x, int y)
+    {
+        if (mapa[y, x] == 0 || mapa[y, x] == 7)
+        {
+            mapa[jugadorY, jugadorX] = 0;
+
+            jugadorX = x;
+            jugadorY = y;
+
+            mapa[jugadorY, jugadorX] = 9;
+        }
+    }
+
+    static void ColocarBomba()
+    {
+        if (!bombaActiva)
+        {
+            bombaActiva = true;
+
+            bombaX = jugadorX;
+            bombaY = jugadorY;
+
+            timerBomba = 3;
+
+            mapa[bombaY, bombaX] = 4;
+        }
+    }
+
+    static void ActualizarBomba()
+    {
+        if (bombaActiva)
+        {
+            timerBomba--;
+
+            if (timerBomba <= 0)
+            {
+                ExplotarBomba();
+            }
+        }
+    }
+
+    static void ExplotarBomba()
+    {
+        Explosión(bombaX, bombaY);
+        Explosión(bombaX + 1, bombaY);
+        Explosión(bombaX - 1, bombaY);
+        Explosión(bombaX, bombaY + 1);
+        Explosión(bombaX, bombaY - 1);
+
+        bombaActiva = false;
+    }
+
+    static void Explosión(int x, int y)
+    {
+        if (mapa[y, x] == 1)
+        {
+            return;
+        }
+
+        if (mapa[y, x] == 2)
+        {
+            mapa[y, x] = 0;
+        }
+        else if (mapa[y, x] == 3)
+        {
+            mapa[y, x] = 7;
+        }
+        else
+        {
+            mapa[y, x] = 0;
+        }
+
+        if (jugadorX == x && jugadorY == y)
+        {
+            Console.Clear();
+            Console.WriteLine("¡PERDISTE!");
+            juegoActivo = false;
+        }
+    }
+
+    static void VerificarVictoria()
+    {
+        if (mapa[jugadorY, jugadorX] == 7)
+        {
+            Console.Clear();
+            Console.WriteLine("¡GANASTE!");
+            juegoActivo = false;
+        }
+    }
+}

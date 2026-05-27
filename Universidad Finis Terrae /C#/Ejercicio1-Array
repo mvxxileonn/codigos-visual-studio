@@ -1,0 +1,45 @@
+
+//Crea un programa que:
+//Guarde 5 notas en un array.
+//uestre todas las notas.
+//Calcule el promedio.
+//Muestre la nota mayor y la menor.
+
+//Crear array de 5 espacios
+double[] notas = new double[5];
+//Llenar el array con las notas
+notas[0] = 4.0;
+notas[1] = 5.0;
+notas[2] = 6.5;
+notas[3] = 4.0;
+notas[4] = 7.0;
+//Mostrar todas las notas
+Console.WriteLine("Las notas son:");
+for (int i = 0; i < notas.Length; i++)
+{
+    Console.WriteLine(notas[i]);
+}
+//Calcular el promedio
+double suma = 0;
+for (int i = 0; i < notas.Length; i++)
+{
+    suma += notas[i];
+}
+double promedio = suma / notas.Length;
+Console.WriteLine("El promedio es: " + promedio);
+//Encontrar la nota mayor y menor
+double notaMayor = notas[0];
+double notaMenor = notas[0];
+for (int i = 1; i < notas.Length; i++)
+{
+    if (notas[i] > notaMayor)
+    {
+        notaMayor = notas[i];
+    }
+    if (notas[i] < notaMenor)
+    {
+        notaMenor = notas[i];
+    }
+}
+Console.WriteLine("La nota mayor es: " + notaMayor);
+Console.WriteLine("La nota menor es: " + notaMenor);
